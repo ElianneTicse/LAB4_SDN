@@ -61,7 +61,7 @@ public class StatisticsCollector implements IFloodlightModule, IStatisticsServic
 	//Creacion de variables
 	private Integer PortTxThreshold;
 	private Integer PortRxThreshold;
-
+	private static ScheduledFuture<?> flowStatsCollector;
 
 	/**
 	 * Run periodically to collect all port statistics. This only collects
@@ -305,6 +305,7 @@ public class StatisticsCollector implements IFloodlightModule, IStatisticsServic
 	 */
 	private void startStatisticsCollection() {
 		portStatsCollector = threadPoolService.getScheduledExecutor().scheduleAtFixedRate(new PortStatsCollector(), portStatsInterval, portStatsInterval, TimeUnit.SECONDS);
+		flowStatsCollector = threadPoolService.getScheduledExecutor().scheduleAtFixedRate(new FlowStatsCollector(), portStatsInterval, portStatsInterval, TimeUnit.SECONDS);
 		tentativePortStats.clear(); /* must clear out, otherwise might have huge BW result if present and wait a long time before re-enabling stats */
 		log.warn("Statistics collection thread(s) started");
 	}
